@@ -1,17 +1,25 @@
-CFLAGS=-Wall
-LDFLAGS=-lncursesw
+           CC=gcc -x c
+
+      CCFLAGS=-Wall -pedantic -Iinclude
+      LDFLAGS=-lncursesw
+
+         OBJS=build/layout.o \
+			  build/assets.o \
+			  build/settings.o \
+			  build/tree.o \
+			  build/tt.o
+
 
 all: layout
 
-layout: layout.o assets.o
+layout: $(OBJS)
 	g++ $(LDFLAGS) $^ -o $@
 
-layout.o: layout.c
-	g++ $(CFLAGS) -c $< -o $@
-
-assets.o: assets.c assets.h
-	g++ $(CFLAGS) -c $< -o $@
+$(OBJS): build/%.o : src/%.c
+	$(CC) $(CCFLAGS) -c $< -o $@
 
 clean:
 	rm -rf layout
-	rm -rf *.o
+	rm -rf build/*.o
+
+.PHONY: clean
