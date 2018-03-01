@@ -1,0 +1,103 @@
+Nice page for unicode symbols: https://unicode-table.com/ru/#252F
+═══════════════════════════════════════════════════════════════════════════════
+⋮⊟root.branch1.branch….branch7  ▼ ⊟ ⊞ ┏ Prope… ▼ ┯ Property ┯ Property ┯ Pro… ?
+┣━⊟branch                             ┃          │          │          │      ▲
+┃ ┣━⊞branch                           ┃          │          │          │      ⋮
+┃ ┣━⊞branch                           ┃          │          │          │      ⋮
+┃ ┣━⊞branch                           ┃          │          │          │      ⋮
+┃ ┗━⊞branch                           ┃          │          │          │      ◆
+┣━⊟branch                             ┃          │          │          │      ⋮
+┃ ┣━⊟branch                           ┃          │          │          │      ⋮
+┃ ┃ ┣━⊞branch                         ┃          │          │          │      ⋮
+┃ ┃ ┣━⊟branch                         ┃          │          │          │      ⋮
+┃ ┃ ┃ ┖╼leaf                          ┃          │          │          │      ⋮
+┃ ┃ ┗━⊞branch                         ┃          │          │          │      ⋮
+┃ ┣━⊞branch                           ┃          │          │          │      ⋮
+┃ ┠╼leaf .............................▶          │          │          │      ⋮
+┃ ┖╼leaf                              ┃          │          │          │      ⋮
+┠╼leaf                                ┃          │          │          │      ▼
+⋮        ▼ 117 / 14 / 125 ▲           ◀◆⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯▶ 
+0123456789|123456789|123456789|123456789|123456789|123456789|123456789|12345678
+═══════════════════════════════════════════════════════════════════════════════
+
+ASCII TableTree (TT) effectively consists of tree navigation part and table
+navigation part with synchronized scrolling and sorting procedures (*).
+
+Overall TT widget height is limited to 5 lines. Width can not be lesser than 79
+symbols. In case of wider terminals, the Widget must fill it with table part,
+while tree column has fixed length of 39 symbols.
+
+User may change real width of columns. By default, they're all set to 10
+symbols (word "property" with two spaces).
+
+If Label is longer than field width, it will be appended with ellipsis and
+becomes a Control. Except for breadcrumbs, ellipsis are added to the end of the
+label substituting exceeding content. Ellipsis in breadcrumbs has to substitute
+path tokens before latest, but if latest is greater than breadcrumbs field
+width - 3 ("r…."), the latest token will be shortened with them as well.
+
+Keyboard control:
+  Common:
+    Arrows/Tab  - moves cursor between the controls (tree is control as well)
+    Enter       - activates control, if possible
+    PgUp/PgDown - list pagination
+    Home/End    - go to the beginning/end of the current list
+  Special:
+    - alphanumeric input causes lookup along the opened nodes in tree
+    - being on ellipsis, the question mark '?' makes modal dialog (*) with full
+    text to appear.
+
+Sorting options:
+    - primary/secondary/others (columns + identifier label)
+    - branches first
+    - treat digits in identifier label as numerical literal
+
+Control types (**):
+    - ellipsis - activating invokes the modal dialog with the full text
+    available
+    - +/- icons making "branch" became expanded/collapsed
+    - scrollbars acting like usual scrollbars
+    - 
+
+(*) The widget may rely on other windows or additional controls created outside
+itself (e.g. search input dialog).
+(**) Pagination is not a sensitive control.
+
+═══════════════════════════════════════════════════════════════════════════════
+struct TT_Entry {
+    const wchar_t * entryName;
+    uchar_t flags;
+    struct PropertiesList * properties;
+};
+
+struct Assets {
+    char name[4];
+    wchar_t facet;
+    char description[32];
+} gTT_assets[] = {
+    /* Mnemonicals */
+    { "TEB",   L'⊞',    "open branch in tree" },
+    { "TCB",   L'⊟',    "collapse opened branch in tree" },
+    { "tSI",   L'▲',    "sort in ascending order" },
+    { "tSD",   L'▼',    "sort in descending order" },
+    { "dll",   L'…',    "textual ellipsis" },
+    { "vll",   L'⋮',    "vertical ellipsis" },
+    { "hll",   L'⋯',    "horizontal ellipsis" },
+    { "sal",   L'◀',    "left scroll arrow" },
+    { "sar",   L'▶',    "right scroll arrow" },
+    { "knb",   L'◆',    "knob" },
+    /* Table decorations */
+    { "tjf",   L'┃',    "table major filler" },
+    { "tnf",   L'│',    "table minor filler" },
+    { "ubj",   L'┏',    "table upmost left corner" },
+    { "ubn",   L'┯',    "table upmost separator" },
+    /* Tree decorations */
+    { "Tfl",   L'┃',    "tree verical opened filler" },
+    { "Tbf",   L'┣',    "tree branch fork" },
+    { "Tlf",   L'┠',    "tree leaf fork" },
+    { "Tle",   L'┖',    "tree last leaf fork" },
+    { "Tbe",   L'┗',    "tree last leaf fork" },
+    { "TlL",   L'╼',    "tree leaf point" },
+    { "TbL",   L'━',    "tree branch point" },
+};
+
